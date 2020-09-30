@@ -45,7 +45,7 @@ export class Coin {
         this.fontColor = 'black';
         this.bothTime = performance.now();
         this.livePercent = 0;
-        this.lifeLong = lifeLong * (1 / ((this.bothTime - __pool__.bothTime) * 10 + 1) + .8);
+        this.lifeLong = lifeLong * (1 / ((this.bothTime - __pool__.bothTime) * 10 + 1) + .3);
         this.isAlive = true;
         __pool__.coins.push(this);
     }
@@ -90,7 +90,7 @@ export class Coin {
         this.__pool__.createCoin(
             canvasWidth / 2,
             canvasHeight - coinR,
-            2000
+            5000
         );
 
         return true;
@@ -147,13 +147,13 @@ export class GreenCoin extends BaseCoin {
         this.__pool__.createCoin(
             canvasWidth / 2,
             canvasHeight - coinR,
-            2000
+            5000
         );
 
         this.__pool__.createCoin(
             canvasWidth / 2,
             canvasHeight - coinR,
-            2000
+            5000
         );
 
         return true;
