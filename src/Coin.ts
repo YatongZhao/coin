@@ -1,12 +1,14 @@
 import { canvasHeight, canvasWidth, coinR } from './canvasConfig';
 
 export class CoinPool {
+    public coins: Array<Coin>;
+    public bothTime: number;
     constructor() {
         this.coins = [];
         this.bothTime = performance.now();
     }
 
-    tryClick(point) {
+    tryClick(point: [number, number]) {
         for (let i = this.coins.length - 1; i >= 0; i--) {
             let isClicked = this.coins[i].tryClick(point);
             if (isClicked) {
@@ -15,7 +17,7 @@ export class CoinPool {
         }
     }
 
-    createCoin(x, y, lifeLong) {
+    createCoin(x: number, y: number, lifeLong: number) {
         let randomK = Math.random();
 
         if (randomK < .8) {
@@ -27,18 +29,23 @@ export class CoinPool {
 }
 
 export class Coin {
+    public color: string;
+    public fontColor: string;
+    public bothTime: number;
+    public isAlive: boolean;
+
     constructor(
-        x, y, lifeLong, coinPool
+        public x: number,
+        public y: number,
+        public lifeLong: number,
+        public __pool__: CoinPool
     ) {
-        this.x = x;
-        this.y = y;
-        this.__pool__ = coinPool;
         this.color = 'yellow';
         this.fontColor = 'black';
         this.bothTime = performance.now();
-        this.lifeLong = lifeLong * (1 / ((this.bothTime - this.__pool__.bothTime) * 10 + 1) + .8);
+        this.lifeLong = lifeLong * (1 / ((this.bothTime - __pool__.bothTime) * 10 + 1) + .8);
         this.isAlive = true;
-        coinPool.coins.push(this);
+        __pool__.coins.push(this);
     }
 
     state() {
@@ -52,15 +59,15 @@ export class Coin {
         return this;
     }
 
-    updateX(liveTime) {
+    updateX(liveTime: number) {
         return this.x + liveTime / 1000;
     }
 
-    updateY(liveTime) {
+    updateY(liveTime: number) {
         return this.y + liveTime / 1000;
     }
 
-    isClicked(point) {
+    isClicked(point: [number, number]) {
         if (
             (point[0] - this.x) ** 2 +
             (point[1] - this.y) ** 2 <=
@@ -72,7 +79,7 @@ export class Coin {
         }
     }
 
-    tryClick(point) {
+    tryClick(point: [number, number]) {
         if (!this.isClicked(point)) {
             return false;
         }
@@ -88,9 +95,11 @@ export class Coin {
 }
 
 export class BaseCoin extends Coin {
-    constructor(
-        x, y, lifeLong, coinPool
-    ) {
+    private target: [number, number];
+    private originX: number;
+    private originY: number;
+
+    constructor(x: number, y: number, lifeLong: number, coinPool: CoinPool) {
         super(x, y, lifeLong, coinPool);
         this.target = [
             2 * coinR + Math.random() * (canvasWidth - 4 * coinR),
@@ -101,7 +110,7 @@ export class BaseCoin extends Coin {
         this.originY = y;
     }
 
-    updateX(liveTime) {
+    updateX(liveTime: number) {
         let distance = this.target[0] - this.x;
 
         let p1 = distance / this.lifeLong ** 2;
@@ -109,7 +118,7 @@ export class BaseCoin extends Coin {
         return liveTime ** 2 * p1 + this.x;
     }
 
-    updateY(liveTime) {
+    updateY(liveTime: number) {
         let distance = this.target[1] - this.y;
 
         let p1 = distance / this.lifeLong ** 2;
@@ -120,14 +129,14 @@ export class BaseCoin extends Coin {
 
 export class GreenCoin extends BaseCoin {
     constructor(
-        x, y, lifeLong, coinPool
+        x: number, y: number, lifeLong: number, coinPool: CoinPool
     ) {
         super(x, y, lifeLong, coinPool);
         this.color = 'green';
         this.fontColor = 'white';
     }
 
-    tryClick(point) {
+    tryClick(point: [number, number]) {
         if (!this.isClicked(point)) {
             return false;
         }

@@ -1,6 +1,8 @@
 import { canvasWidth, canvasHeight, coinR } from './canvasConfig';
 import { BaseCoin, CoinPool } from './Coin';
 
+const ctx: Worker = self as any;
+
 const offscreen = new OffscreenCanvas(canvasWidth, canvasHeight);
 const offscreenCtx = offscreen.getContext('2d');
 
@@ -43,7 +45,7 @@ const stroke = () => {
 
     const img = offscreen.transferToImageBitmap();
 
-    postMessage({ type: 'drawPoint', img });
+    ctx.postMessage({ type: 'drawPoint', img });
 }
 
 let timer = null;
@@ -52,9 +54,7 @@ let mouseX = 0;
 let mouseY = 0;
 
 const timeoutHandler = () => {
-    stroke({
-        mouseX, mouseY
-    });
+    stroke();
     clearTimeout(timer);
     timer = null;
 
@@ -63,7 +63,7 @@ const timeoutHandler = () => {
     }
 }
 
-onmessage = e => {
+ctx.addEventListener('message', e => {
     if (e.data.msg === 'drawPoint') {
         if (!(e.data.mouseX === mouseX && e.data.mouseY === mouseY)) {
             mouseX = e.data.mouseX;
@@ -74,7 +74,7 @@ onmessage = e => {
             }
         }
     } else if (e.data.msg === 'add$') {
-        new BaseCoin(...e.data.$, coinPool);
+        new BaseCoin(e.data.$[0], e.data.$[1], e.data.$[2], coinPool);
 
         if (!timer) {
             timer = setTimeout(timeoutHandler, 0);
@@ -82,6 +82,8 @@ onmessage = e => {
     } else if (e.data.msg === 'click$') {
         coinPool.tryClick(e.data.position);
     }
-}
+});
 
 timer = setTimeout(timeoutHandler, 0);
+
+export default ctx as any;

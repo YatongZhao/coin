@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["WebWorker", "ES5", "ScriptHost", "DOM"],
+        "typeRoots": [
+            "./typings",
+            "./node_modules/@types"
+        ]
+    },
+    "include": ["./src"],
+    "exclude": [
+        "node_modules",
+        "webpack.config.ts"
+    ]
+}

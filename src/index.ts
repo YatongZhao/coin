@@ -1,4 +1,7 @@
-import { canvasHeight, canvasWidth, coinR } from './canvasConfig';
+import { canvasHeight, canvasWidth } from './canvasConfig';
+import Worker from './index.worker';
+
+const worker = Worker();
 
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
@@ -21,9 +24,6 @@ document.body.appendChild(btn);
 
 const CANVAS_LEFT = canvas.offsetLeft;
 const CANVAS_TOP = canvas.offsetTop;
-
-const worker = new Worker('dist/worker.js');
-
 worker.addEventListener('message', e => {
     window.requestAnimationFrame(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
