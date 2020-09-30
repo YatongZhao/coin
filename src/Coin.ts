@@ -18,14 +18,21 @@ export class CoinPool {
     }
 
     createCoin(x: number, y: number, lifeLong: number) {
-        let randomK = Math.random();
+        let randomK = Math.random() * 100;
         // 80, 10, 6, 3, 1
-        if (randomK < .8) {
+        let now = performance.now();
+        let dis = (now - this.bothTime) / 1000;
+
+        if (randomK < 80 - dis) {
             new BaseCoin(x, y, lifeLong, this);
-        } else if (randomK < .95) {
+        } else if (randomK < 90 - dis) {
             new GreenCoin(x, y, lifeLong, this);
-        } else {
+        } else if (randomK < 96 - dis) {
+            new BlackCoin(x, y, lifeLong, this);
+        } else if (randomK > 99) {
             new OrangeCoin(x, y, lifeLong, this);
+        } else {
+            new RedCoin(x, y, lifeLong, this);
         }
     }
 }
@@ -230,6 +237,32 @@ export class BlackCoin extends BaseCoin {
             canvasHeight - coinR,
             5000
         );
+
+        return true;
+    }
+}
+export class RedCoin extends BaseCoin {
+    constructor(
+        x: number, y: number, lifeLong: number, coinPool: CoinPool
+    ) {
+        super(x, y, lifeLong, coinPool);
+        this.color = 'red';
+        this.fontColor = 'white';
+    }
+
+    tryClick(point: [number, number]) {
+        if (!this.isClicked(point)) {
+            return false;
+        }
+
+        for (let i = 0; i < 20; i++) {
+            this.__pool__.createCoin(
+                this.x,
+                this.y,
+                5000
+            );
+            this.isAlive = false;
+        }
 
         return true;
     }
