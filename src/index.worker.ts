@@ -6,7 +6,7 @@ const ctx: Worker = self as any;
 const offscreen = new OffscreenCanvas(canvasWidth, canvasHeight);
 const offscreenCtx = offscreen.getContext('2d');
 
-const drawCoin = (x, y, color, fontColor = 'black') => {
+const drawCoin = (x, y, color, fontColor = 'black', livePercent: number) => {
     offscreenCtx.beginPath();
     offscreenCtx.moveTo(x + coinR, y);
     offscreenCtx.arc(x, y, coinR, 0, 2 * Math.PI);
@@ -16,9 +16,14 @@ const drawCoin = (x, y, color, fontColor = 'black') => {
     offscreenCtx.shadowBlur = 5;
     offscreenCtx.shadowColor = 'rgba(0, 0, 0, 0.5)';
     offscreenCtx.fill();
+    offscreenCtx.beginPath();
     offscreenCtx.shadowOffsetX = 0;
     offscreenCtx.shadowOffsetY = 0;
     offscreenCtx.shadowBlur = 0;
+    offscreenCtx.arc(x, y, coinR, 0, 2 * Math.PI * livePercent);
+    offscreenCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    offscreenCtx.fill();
+
     offscreenCtx.fillStyle = fontColor;
     offscreenCtx.font = "bold 22px '微软雅黑'";
     offscreenCtx.fillText('$', x, y + 8);
@@ -32,7 +37,7 @@ const strokeCoin = () => {
     coinPool.coins = coinPool.coins.filter(coin => {
         let state = coin.state();
         if (state.isAlive) {
-            drawCoin(state.x, state.y, state.color, state.fontColor);
+            drawCoin(state.x, state.y, state.color, state.fontColor, state.livePercent);
         }
 
         return state.isAlive;

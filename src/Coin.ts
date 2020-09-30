@@ -33,6 +33,7 @@ export class Coin {
     public fontColor: string;
     public bothTime: number;
     public isAlive: boolean;
+    public livePercent: number;
 
     constructor(
         public x: number,
@@ -43,6 +44,7 @@ export class Coin {
         this.color = 'yellow';
         this.fontColor = 'black';
         this.bothTime = performance.now();
+        this.livePercent = 0;
         this.lifeLong = lifeLong * (1 / ((this.bothTime - __pool__.bothTime) * 10 + 1) + .8);
         this.isAlive = true;
         __pool__.coins.push(this);
@@ -50,6 +52,7 @@ export class Coin {
 
     state() {
         let liveTime = performance.now() - this.bothTime;
+        this.livePercent = liveTime / this.lifeLong;
         if (liveTime > this.lifeLong) {
             this.isAlive = false;
         } else {
