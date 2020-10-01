@@ -18,7 +18,7 @@ const config: webpack.Configuration & WebpackDevServerConfiguration = {
         globalObject: 'this'
     },
     resolve: {
-        extensions: ['.ts', '.js', '.json', '.svelte'],
+        extensions: ['.ts', '.mjs', '.js', '.json', '.svelte'],
         alias: {
             svelte: path.resolve('node_modules', 'svelte')
         },
