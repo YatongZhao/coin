@@ -1,11 +1,18 @@
 import { canvasHeight, canvasWidth } from './canvasConfig';
 import Worker from './game.worker';
 
+export interface CoinCanvasConfig {
+    onEnd: (data: any) => void;
+};
+
 export class CoinCanvas {
     public ctx: CanvasRenderingContext2D;
     public worker: Worker;
-    private endHandlerList: Array<Function>;
-    constructor(public canvas: HTMLCanvasElement) {
+    private onEnd: (data: any) => void;
+
+    constructor(public canvas: HTMLCanvasElement, config?: CoinCanvasConfig) {
+        this.onEnd = config?.onEnd;
+
         this.init();
     }
 
@@ -21,11 +28,14 @@ export class CoinCanvas {
 
         this.worker.addEventListener('message', e => {
 
-            if (e.data.type === 'drawFrame') {
-                window.requestAnimationFrame(() => {
-                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                    this.ctx.drawImage(e.data.img, 0, 0);
-                });
+            switch (e.data.type) {
+                case 'drawFrame':
+                    this.drawFrame(e.data.img);
+                    break;
+                case 'gameEnd':
+                    this?.onEnd(e.data.data);
+                default:
+                    break;
             }
         });
 
@@ -42,13 +52,10 @@ export class CoinCanvas {
         this.worker.postMessage({ msg: 'start' });
     }
 
-    addEventListener(handle: 'end', handler: Function) {
-        switch (handle) {
-            case 'end':
-                this.endHandlerList.push(handler);
-                break;
-            default:
-                break;
-        }
+    drawFrame(img: CanvasImageSource) {
+        window.requestAnimationFrame(() => {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.drawImage(img, 0, 0);
+        });
     }
 }

@@ -46,14 +46,10 @@ export class CanvasRenderer {
     }
 
     renderCoin() {
-        this.game.coinPool.coins = this.game.coinPool.coins.filter(coin => {
-            let state = coin.state();
-            
-            if (state.isAlive) {
-                this.drawCoin(state.x, state.y, state.color, state.fontColor, state.livePercent);
+        this.game.filterCoinPool(coin => {
+            if (coin.isAlive) {
+                this.drawCoin(coin.x, coin.y, coin.color, coin.fontColor, coin.livePercent);
             }
-
-            return state.isAlive;
         });
     }
 }

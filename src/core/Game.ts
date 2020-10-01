@@ -1,4 +1,4 @@
-import { CoinPool } from './Coin';
+import { CoinPool, Coin } from './Coin';
 import { CanvasRenderer } from "./CanvasRenderer";
 import { canvasWidth, canvasHeight } from './canvasConfig';
 
@@ -6,14 +6,16 @@ export class Game {
     public coinPool: CoinPool;
     private renderer: CanvasRenderer;
     private timer: number | null;
-    private render: (ImageBitmap) => void;
+    private render: (img: ImageBitmap) => void;
+    private onEnd: (data: any) => void;
+    private status: 'running' | 'finish' = 'finish';
 
-    constructor({
-        render
-    }: {
-        render: (ImageBitmap) => void;
+    constructor(config: {
+        render: (img: ImageBitmap) => void;
+        onEnd: (data: any) => void;
     }) {
-        this.render = render;
+        this.render = config.render;
+        this.onEnd = config.onEnd;
         this.coinPool = new CoinPool();
         this.renderer = new CanvasRenderer(this);
 
@@ -23,10 +25,11 @@ export class Game {
 
     start() {
         if (this.coinPool.coins.length === 0) {
+            this.status = 'running';
+            this.coinPool.bothTime = performance.now();
             this.coinPool.createCoin(canvasWidth/ 2, canvasHeight / 2, 7000);
 
             this.ensureTimerIsRuning();
-
             return true;
         }
 
@@ -52,6 +55,23 @@ export class Game {
             this.timer = setTimeout(this.timeoutHandler, 0);
         } else {
             this.timer = null;
+        }
+
+        this.checkTheEnd();
+    }
+
+    filterCoinPool(callback: (coin: Coin) => void) {
+        this.coinPool.coins = this.coinPool.coins.filter(coin => {
+            let state = coin.state();
+            callback(state);
+            return state.isAlive;
+        });
+    }
+
+    checkTheEnd() {
+        if (this.coinPool.coins.length === 0 && this.status === 'running') {
+            this.status = 'finish';
+            this.onEnd(0);
         }
     }
 

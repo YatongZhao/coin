@@ -5,6 +5,9 @@ const workerCtx: Worker = self as any;
 const game = new Game({
     render(img) {
         workerCtx.postMessage({ type: 'drawFrame', img });
+    },
+    onEnd(data) {
+        workerCtx.postMessage({ type: 'gameEnd', data });
     }
 });
 
