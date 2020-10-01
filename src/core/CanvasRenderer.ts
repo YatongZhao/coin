@@ -1,5 +1,6 @@
 import type { Game } from "./Game";
 import { canvasWidth, canvasHeight, coinR } from './canvasConfig';
+import type { Coin } from "./Coin";
 
 export class CanvasRenderer {
     private game: Game;
@@ -20,7 +21,8 @@ export class CanvasRenderer {
         return this.offscreen.transferToImageBitmap();
     }
 
-    drawCoin(x, y, color, fontColor = 'black', livePercent: number) {
+    drawCoin(coin: Coin) {
+        const { x, y, color, fontColor, livePercent, icon } = coin;
         this.ctx.beginPath();
         this.ctx.arc(x, y, coinR, 0, 2 * Math.PI);
         this.ctx.fillStyle = color;
@@ -39,7 +41,7 @@ export class CanvasRenderer {
     
         this.ctx.fillStyle = fontColor;
         this.ctx.font = "bold 22px '微软雅黑'";
-        this.ctx.fillText('$', x, y + 8);
+        this.ctx.fillText(icon, x, y + 8);
         this.ctx.textAlign = 'center';
         this.ctx.closePath();
     }
@@ -47,7 +49,7 @@ export class CanvasRenderer {
     renderCoin() {
         this.game.filterCoinPool(coin => {
             if (coin.isAlive) {
-                this.drawCoin(coin.x, coin.y, coin.color, coin.fontColor, coin.livePercent);
+                this.drawCoin(coin);
             }
         });
     }

@@ -24,12 +24,14 @@ export class CoinPool {
 
         if (randomK < 80 - dis) {
             new BaseCoin(x, y, lifeLong, this);
-        } else if (randomK < 90 - dis) {
+        } else if (randomK < 89 - dis) {
             new GreenCoin(x, y, lifeLong, this);
-        } else if (randomK < 96 - dis) {
+        } else if (randomK < 94 - dis) {
             new BlackCoin(x, y, lifeLong, this);
         } else if (randomK > 99) {
             new OrangeCoin(x, y, lifeLong, this);
+        } else if (randomK > 98) {
+            new BugCoin(x, y, lifeLong, this);
         } else {
             new RedCoin(x, y, lifeLong, this);
         }
@@ -45,11 +47,12 @@ export class CoinPool {
 }
 
 export class Coin {
-    public color: string;
-    public fontColor: string;
-    public bothTime: number;
-    public isAlive: boolean;
-    public livePercent: number;
+    public color: string = 'yellow';
+    public fontColor: string = 'black';
+    public icon: string = '$';
+    public bothTime: number = performance.now();
+    public isAlive: boolean = true;
+    public livePercent: number = 0;
 
     constructor(
         public x: number,
@@ -57,12 +60,7 @@ export class Coin {
         public lifeLong: number,
         public __pool__: CoinPool
     ) {
-        this.color = 'yellow';
-        this.fontColor = 'black';
-        this.bothTime = performance.now();
-        this.livePercent = 0;
         this.lifeLong = lifeLong * (1 / ((this.bothTime - __pool__.bothTime) / 1000 + 1) + .3);
-        this.isAlive = true;
         __pool__.coins.push(this);
     }
 
@@ -270,6 +268,33 @@ export class RedCoin extends BaseCoin {
             );
             this.isAlive = false;
         }
+
+        return true;
+    }
+}
+
+export class BugCoin extends BaseCoin {
+    constructor(
+        x: number, y: number, lifeLong: number, coinPool: CoinPool
+    ) {
+        super(x, y, lifeLong, coinPool);
+        this.color = 'purple';
+        this.fontColor = 'white';
+        this.icon = '😢';
+    }
+
+    tryClick(point: [number, number]) {
+        if (!this.isClicked(point)) {
+            return false;
+        }
+
+        this.__pool__.createCoin(
+            this.x,
+            this.y,
+            5000
+        );
+
+        this.__pool__.score -= 2;
 
         return true;
     }
