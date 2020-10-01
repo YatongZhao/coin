@@ -1,18 +1,29 @@
-import * as webpack from 'webpack';
+import type * as webpack from 'webpack';
+import * as path from 'path';
+import type { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-const config: webpack.Configuration = {
+const mode: 'development' | 'production' = (process.env.NODE_ENV as any) || 'development';
+const prod = mode === 'production';
+
+const config: webpack.Configuration & WebpackDevServerConfiguration = {
     target: 'web',
-    mode: 'development',
+    mode,
     entry: {
-        bundle: ['./src/index.ts'],
-        // worker: ['./src/index.worker.ts']
+        bundle: ['./src/index.ts']
     },
     output: {
         path: __dirname + '/dist',
         filename: '[name].js',
         globalObject: 'this'
     },
-    resolve: { extensions: ['.ts', '.js', '.json'] },
+    resolve: {
+        extensions: ['.ts', '.js', '.json', '.svelte'],
+        alias: {
+            svelte: path.resolve('node_modules', 'svelte')
+        },
+        mainFields: ['svelte', 'browser', 'module', 'main']
+    },
     devServer: {
         hot: true
     },
@@ -28,6 +39,23 @@ const config: webpack.Configuration = {
                             inline: 'fallback'
                         }
                     }
+                ]
+            },
+            {
+                test: /\.svelte$/,
+                use: {
+                    loader: 'svelte-loader',
+                    options: {
+                        hotReload: true,
+                        preprocess: require('svelte-preprocess')({})
+                    }
+                }
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    prod ? MiniCssExtractPlugin.loader : 'style-loader',
+                    'css-loader'
                 ]
             },
             {

@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "lib": ["WebWorker", "ES5", "ScriptHost", "DOM"],
+        "moduleResolution": "node",
+        "target": "ES6",
+        "lib": ["WebWorker", "ES6", "ScriptHost", "DOM"],
         "typeRoots": [
             "./typings",
             "./node_modules/@types"
@@ -11,5 +12,6 @@
     "exclude": [
         "node_modules",
         "webpack.config.ts"
-    ]
+    ],
+    "extends": "@tsconfig/svelte/tsconfig.json"
 }
