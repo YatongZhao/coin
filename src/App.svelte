@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { CoinCanvas } from './CoinCanvas';
+    import { CoinCanvas } from './core/CoinCanvas';
     let canvas: HTMLCanvasElement;
     let coinCanvas: CoinCanvas;
 
