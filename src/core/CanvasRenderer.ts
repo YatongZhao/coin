@@ -22,7 +22,6 @@ export class CanvasRenderer {
 
     drawCoin(x, y, color, fontColor = 'black', livePercent: number) {
         this.ctx.beginPath();
-        this.ctx.moveTo(x + coinR, y);
         this.ctx.arc(x, y, coinR, 0, 2 * Math.PI);
         this.ctx.fillStyle = color;
         this.ctx.shadowOffsetX = 3;

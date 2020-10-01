@@ -23,8 +23,9 @@ export class CoinCanvas {
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
         
-        const CANVAS_LEFT = this.canvas.offsetLeft;
-        const CANVAS_TOP = this.canvas.offsetTop;
+        const rect = this.canvas.getBoundingClientRect();
+        const CANVAS_LEFT = rect.left;
+        const CANVAS_TOP = rect.top;
 
         this.worker.addEventListener('message', e => {
 
