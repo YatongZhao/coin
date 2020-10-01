@@ -8,6 +8,9 @@ const game = new Game({
     },
     onEnd(data) {
         workerCtx.postMessage({ type: 'gameEnd', data });
+    },
+    onScore(score) {
+        workerCtx.postMessage({ type: 'score', score });
     }
 });
 
@@ -15,9 +18,6 @@ workerCtx.addEventListener('message', e => {
     switch (e.data.msg) {
         case 'start':
             game.start();
-            break;
-        case 'add$':
-            game.add$(e.data.$[0], e.data.$[1], e.data.$[2]);
             break;
         case 'click$':
             game.click$(e.data.position);

@@ -2,16 +2,19 @@ import { canvasHeight, canvasWidth } from './canvasConfig';
 import Worker from './game.worker';
 
 export interface CoinCanvasConfig {
-    onEnd: (data: any) => void;
+    onEnd?: (data: any) => void;
+    onScore?: (score: number) => void;
 };
 
 export class CoinCanvas {
     public ctx: CanvasRenderingContext2D;
     public worker: Worker;
     private onEnd: (data: any) => void;
+    private onScore: (score: number) => void;
 
     constructor(public canvas: HTMLCanvasElement, config?: CoinCanvasConfig) {
         this.onEnd = config?.onEnd;
+        this.onScore = config?.onScore;
 
         this.init();
     }
@@ -35,6 +38,10 @@ export class CoinCanvas {
                     break;
                 case 'gameEnd':
                     this?.onEnd(e.data.data);
+                    break;
+                case 'score':
+                    this?.onScore(e.data.score);
+                    break;
                 default:
                     break;
             }

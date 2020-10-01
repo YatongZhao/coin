@@ -4,17 +4,23 @@
     let canvas: HTMLCanvasElement;
     let coinCanvas: CoinCanvas;
     let isGameRunning = false;
+    let score = 0;
 
     onMount(() => {
         coinCanvas = new CoinCanvas(canvas, {
-            onEnd() {
+            onEnd(n) {
                 isGameRunning = false;
+                score = n;
+            },
+            onScore(_score) {
+                score = _score;
             }
         });
     });
 
     function handleStart() {
         if (coinCanvas) {
+            score = 0;
             coinCanvas.start();
             isGameRunning = true;
         }
@@ -26,6 +32,7 @@
     <canvas bind:this={canvas}/>
     <button on:click={handleStart} class="start-btn">start</button>
 </div>
+<div>得分：{score}</div>
 <div>
     {#if isGameRunning}
         running

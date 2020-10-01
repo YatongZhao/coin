@@ -1,12 +1,11 @@
 import { canvasHeight, canvasWidth, coinR } from './canvasConfig';
 
 export class CoinPool {
-    public coins: Array<Coin>;
-    public bothTime: number;
-    constructor() {
-        this.coins = [];
-        this.bothTime = performance.now();
-    }
+    public coins: Array<Coin> = [];
+    public bothTime: number = performance.now();
+    public score: number = 0;
+
+    constructor(private onScore: (score: number) => void) {}
 
     tryClick(point: [number, number]) {
         for (let i = this.coins.length - 1; i >= 0; i--) {
@@ -34,6 +33,14 @@ export class CoinPool {
         } else {
             new RedCoin(x, y, lifeLong, this);
         }
+
+        this.score++;
+        this?.onScore(this.score);
+    }
+
+    reset() {
+        this.score = 0;
+        this.bothTime = performance.now();
     }
 }
 

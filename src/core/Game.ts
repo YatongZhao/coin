@@ -8,15 +8,18 @@ export class Game {
     private timer: number | null;
     private render: (img: ImageBitmap) => void;
     private onEnd: (data: any) => void;
+    private onScore: (score: number) => void;
     private status: 'running' | 'finish' = 'finish';
 
     constructor(config: {
         render: (img: ImageBitmap) => void;
         onEnd: (data: any) => void;
+        onScore: (score: number) => void;
     }) {
         this.render = config.render;
         this.onEnd = config.onEnd;
-        this.coinPool = new CoinPool();
+        this.onScore = config.onScore;
+        this.coinPool = new CoinPool(this.onScore);
         this.renderer = new CanvasRenderer(this);
 
         this.timeoutHandler = this.timeoutHandler.bind(this);
@@ -25,8 +28,8 @@ export class Game {
 
     start() {
         if (this.coinPool.coins.length === 0) {
+            this.coinPool.reset();
             this.status = 'running';
-            this.coinPool.bothTime = performance.now();
             this.coinPool.createCoin(canvasWidth/ 2, canvasHeight / 2, 7000);
 
             this.ensureTimerIsRuning();
@@ -71,7 +74,7 @@ export class Game {
     checkTheEnd() {
         if (this.coinPool.coins.length === 0 && this.status === 'running') {
             this.status = 'finish';
-            this.onEnd(0);
+            this.onEnd(this.coinPool.score);
         }
     }
 
