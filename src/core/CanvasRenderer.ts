@@ -1,22 +1,26 @@
 import type { Game } from "./Game";
-import { canvasWidth, canvasHeight, coinR } from './canvasConfig';
+import { coinR } from './canvasConfig';
 import type { Coin } from "./Coin";
 
 export class CanvasRenderer {
-    private game: Game;
     private offscreen: OffscreenCanvas;
     private ctx: OffscreenCanvasRenderingContext2D;
 
-    constructor(game: Game) {
-        this.game = game;
-        this.offscreen = new OffscreenCanvas(canvasWidth, canvasHeight);
+    constructor(
+        private game: Game,
+        public canvasWidth: number,
+        public canvasHeight: number) {
+        this.offscreen = new OffscreenCanvas(this.canvasWidth, this.canvasHeight);
         this.ctx = this.offscreen.getContext('2d');
     }
 
     render() {
         this.ctx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
 
-        this.renderTime();
+        this.renderHero();
+        if (this.game.status === 'running') {
+            this.renderTime();
+        }
         this.renderCoin();
 
         return this.offscreen.transferToImageBitmap();
@@ -61,8 +65,30 @@ export class CanvasRenderer {
         this.ctx.font = 'italic small-caps bold 80px arial';
         this.ctx.textAlign = 'right';
         this.ctx.fillStyle = 'gray';
-        this.ctx.fillText('time', canvasWidth - 50, 100);
+        this.ctx.fillText('time', this.canvasWidth / 2 + 200, this.canvasHeight / 2 - 20);
+        let time = (performance.now() - this.game.coinPool.bothTime) / 1000;
+        this.ctx.font = 'italic small-caps bold 40px arial';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillText(`${time.toFixed(3)}`, this.canvasWidth / 2 + 220, this.canvasHeight / 2 - 20);
 
+        this.ctx.closePath();
+    }
+
+    renderHero() {
+        if (!this.game.player1) {
+            return;
+        }
+        let state = this.game.player1.state();
+
+        this.ctx.beginPath();
+        this.ctx.arc(state.x, state.y, this.game.player1.heroR, 0, 2 * Math.PI);
+        this.ctx.fillStyle = 'white';
+        this.ctx.shadowOffsetX = 3;
+        this.ctx.shadowOffsetY = 4;
+        this.ctx.shadowBlur = 5;
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fill();
         this.ctx.closePath();
     }
 }

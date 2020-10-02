@@ -1,4 +1,6 @@
 import { BaseCoin, BlueCoin, GreenCoin, BlackCoin, OrangeCoin, BugCoin, RedCoin, Coin } from "./Coin";
+import type { Hero } from "./Hero";
+import type { Game } from "./Game";
 
 export class CoinPool {
     public coins: Array<Coin> = [];
@@ -102,14 +104,22 @@ export class CoinPool {
         }
     ];
 
-    constructor(private onScore: (score: number) => void) {}
+    constructor(
+        private onScore: (score: number) => void,
+        public __game__: Game) {}
 
     tryClick(point: [number, number]) {
         for (let i = this.coins.length - 1; i >= 0; i--) {
             let isClicked = this.coins[i].tryClick(point);
-            if (isClicked) {
-                break;
-            }
+            // if (isClicked) {
+            //     break;
+            // }
+        }
+    }
+
+    tryEat(hero: Hero) {
+        for (let i = this.coins.length - 1; i >= 0; i--) {
+            this.coins[i].tryToBeEated(hero);
         }
     }
 

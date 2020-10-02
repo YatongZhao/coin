@@ -1,4 +1,5 @@
-export const canvasWidth = 800;
-export const canvasHeight = 500;
+export const gameWidth = 800;
+export const gameHeight = 600;
 
-export const coinR = 15;
+export const coinR = 12;
+

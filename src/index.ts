@@ -1,4 +1,5 @@
 import App from './App.svelte';
+import './index.css';
 
 if (!(window as any).app) {
     const dom = document.createElement('div');
