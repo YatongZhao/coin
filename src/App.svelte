@@ -1,13 +1,13 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { CoinCanvas } from './core/CoinCanvas';
+    import { GameCanvas } from './core/GameCanvas';
     let canvas: HTMLCanvasElement;
-    let coinCanvas: CoinCanvas;
+    let gameCanvas: GameCanvas;
     let isGameRunning = false;
     let score = 0;
 
     onMount(() => {
-        coinCanvas = new CoinCanvas(canvas, {
+        gameCanvas = new GameCanvas(canvas, {
             onEnd(n) {
                 isGameRunning = false;
                 score = n;
@@ -19,9 +19,9 @@
     });
 
     function handleStart() {
-        if (coinCanvas) {
+        if (GameCanvas) {
             score = 0;
-            coinCanvas.start();
+            gameCanvas.start();
             isGameRunning = true;
         }
     }
@@ -50,6 +50,7 @@
     canvas {
         margin: 0 auto;
         box-shadow: 3px 4px 7px rgba(0, 0, 0, .3);
+        z-index: 10000;
     }
     .start-btn {
         position: absolute;

@@ -1,18 +1,18 @@
 import { canvasHeight, canvasWidth } from './canvasConfig';
 import Worker from './game.worker';
 
-export interface CoinCanvasConfig {
+export interface GameCanvasConfig {
     onEnd?: (data: any) => void;
     onScore?: (score: number) => void;
 };
 
-export class CoinCanvas {
+export class GameCanvas {
     public ctx: CanvasRenderingContext2D;
     public worker: Worker;
     private onEnd: (data: any) => void;
     private onScore: (score: number) => void;
 
-    constructor(public canvas: HTMLCanvasElement, config?: CoinCanvasConfig) {
+    constructor(public canvas: HTMLCanvasElement, config?: GameCanvasConfig) {
         this.onEnd = config?.onEnd;
         this.onScore = config?.onScore;
 

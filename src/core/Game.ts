@@ -1,4 +1,5 @@
-import { CoinPool, Coin } from './Coin';
+import type { Coin } from './Coin';
+import { CoinPool } from './CoinPool';
 import { CanvasRenderer } from "./CanvasRenderer";
 import { canvasWidth, canvasHeight } from './canvasConfig';
 

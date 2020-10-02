@@ -16,6 +16,7 @@ export class CanvasRenderer {
     render() {
         this.ctx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
 
+        this.renderTime();
         this.renderCoin();
 
         return this.offscreen.transferToImageBitmap();
@@ -39,10 +40,10 @@ export class CanvasRenderer {
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
         this.ctx.fill();
     
+        this.ctx.textAlign = 'center';
         this.ctx.fillStyle = fontColor;
         this.ctx.font = "bold 22px '微软雅黑'";
         this.ctx.fillText(icon, x, y + 8);
-        this.ctx.textAlign = 'center';
         this.ctx.closePath();
     }
 
@@ -52,5 +53,16 @@ export class CanvasRenderer {
                 this.drawCoin(coin);
             }
         });
+    }
+
+    renderTime() {
+        this.ctx.beginPath();
+
+        this.ctx.font = 'italic small-caps bold 80px arial';
+        this.ctx.textAlign = 'right';
+        this.ctx.fillStyle = 'gray';
+        this.ctx.fillText('time', canvasWidth - 50, 100);
+
+        this.ctx.closePath();
     }
 }
