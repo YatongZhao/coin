@@ -1,9 +1,11 @@
 import Worker from './game.worker';
+import { gameWidth, gameHeight } from './canvasConfig';
 
 export interface GameCanvasConfig {
     onEnd?: (data: any) => void;
     onScore?: (score: number) => void;
     onRender?: (x: number, y: number) => void;
+    map: HTMLCanvasElement;
 };
 
 export class GameCanvas {
@@ -19,12 +21,19 @@ export class GameCanvas {
     private touchOriginX: number = 0;
     private touchOriginY: number = 0;
 
+    public mapCanvas: HTMLCanvasElement | null;
+    public mapCtx: CanvasRenderingContext2D;
+
     constructor(public canvas: HTMLCanvasElement, config?: GameCanvasConfig) {
         this.handleTouchMove = this.handleTouchMove.bind(this);
         this.onEnd = config?.onEnd;
         this.onScore = config?.onScore;
         this.onRender = config?.onRender;
 
+        this.mapCanvas = config.map;
+        this.mapCtx = this.mapCanvas.getContext('2d');
+        this.mapCanvas.width = gameWidth;
+        this.mapCanvas.height = gameHeight;
         this.init();
     }
 
@@ -34,6 +43,11 @@ export class GameCanvas {
 
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        });
         
         const rect = this.canvas.getBoundingClientRect();
         const CANVAS_LEFT = rect.left;
@@ -169,6 +183,8 @@ export class GameCanvas {
         window.requestAnimationFrame(() => {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+            this.mapCtx.clearRect(0, 0, this.mapCanvas.width, this.mapCanvas.height);
+            this.mapCtx.drawImage(img, 0, 0);
         });
     }
 }

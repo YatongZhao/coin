@@ -15,11 +15,15 @@ export class CanvasRenderer {
     }
 
     render() {
-        this.ctx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
+        this.ctx.clearRect(2, 2, this.offscreen.width - 4, this.offscreen.height - 4);
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(0, 0, this.offscreen.width, this.offscreen.height);
 
         this.renderHero();
         if (this.game.status === 'running') {
             this.renderTime();
+            this.renderScore();
         }
         this.renderCoin();
 
@@ -65,12 +69,28 @@ export class CanvasRenderer {
         this.ctx.font = 'italic small-caps bold 80px arial';
         this.ctx.textAlign = 'right';
         this.ctx.fillStyle = 'gray';
-        this.ctx.fillText('time', this.canvasWidth / 2 + 200, this.canvasHeight / 2 - 20);
+        this.ctx.fillText('time', this.canvasWidth / 2 + 200, this.canvasHeight / 2 - 80);
         let time = (performance.now() - this.game.coinPool.bothTime) / 1000;
         this.ctx.font = 'italic small-caps bold 40px arial';
         this.ctx.textAlign = 'left';
         this.ctx.fillStyle = 'red';
-        this.ctx.fillText(`${time.toFixed(3)}`, this.canvasWidth / 2 + 220, this.canvasHeight / 2 - 20);
+        this.ctx.fillText(`${time.toFixed(3)}`, this.canvasWidth / 2 + 220, this.canvasHeight / 2 - 80);
+
+        this.ctx.closePath();
+    }
+
+    renderScore() {
+        this.ctx.beginPath();
+
+        this.ctx.font = 'italic small-caps bold 80px arial';
+        this.ctx.textAlign = 'right';
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillText('score', this.canvasWidth / 2 - 100, this.canvasHeight - 200);
+        let score = this.game.coinPool.score;
+        this.ctx.font = 'italic small-caps bold 40px arial';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillText(`${score}`, this.canvasWidth / 2 - 80, this.canvasHeight - 200);
 
         this.ctx.closePath();
     }

@@ -44,6 +44,9 @@ export class Hero {
     reset() {
         this.x = this.canvasWidth / 2;
         this.y = this.canvasHeight / 2;
+
+        this.heroR = 14;
+        this.speed = 0.0002;
     }
 
     moveX(x: number) {

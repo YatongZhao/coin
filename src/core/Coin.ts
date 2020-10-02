@@ -183,7 +183,10 @@ export class GreenCoin extends BaseCoin {
     }
 
     emitPower() {
-        this.createCoinFromEdge(2);
+        this.createCoinFromEdge(3);
+        if (this.__pool__.__game__.player1) {
+            this.__pool__.__game__.player1.heroR += 1;
+        }
     }
 }
 
@@ -195,6 +198,13 @@ export class OrangeCoin extends BaseCoin {
         this.color = 'orange';
         this.fontColor = 'black';
         this.lifeLong = 5000;
+    }
+
+    emitPower() {
+        this.createCoinFromEdge(2);
+        if (this.__pool__.__game__.player1) {
+            this.__pool__.__game__.player1.speed += .00005;
+        }
     }
 }
 
